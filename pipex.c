@@ -37,5 +37,10 @@ int main(int argc, char **argv)
     printf("cmd 1 is gonna be %s", cmd1);
     printf("cmd 2 is gonna be %s", cmd2);
 
+
+    free(cmd1);
+    free(cmd2);
+    close(fd_input);
+    close(fd_output);
     return (0);
 }

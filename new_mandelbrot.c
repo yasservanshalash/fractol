@@ -56,38 +56,46 @@ void draw_mandelbrot(t_mandelbrot *data) {
 
 void hook(void *param) {
     t_mandelbrot *data = (t_mandelbrot *)param;
+    int mouse_x, mouse_y;
+    mlx_get_mouse_pos(data->mlx, &mouse_x, &mouse_y);
+
+    // Calculate the position in the Mandelbrot set that the mouse points to
+    double mouse_re = (mouse_x - WIDTH / 2.0) / data->zoom + data->offsetX;
+    double mouse_im = (mouse_y - HEIGHT / 2.0) / data->zoom + data->offsetY;
 
     // Zoom in
     if (mlx_is_key_down(data->mlx, MLX_KEY_EQUAL)) {
         data->zoom *= 1.1;
+        data->offsetX += (mouse_re - data->offsetX) * (1 - 1 / 1.1);
+        data->offsetY += (mouse_im - data->offsetY) * (1 - 1 / 1.1);
         draw_mandelbrot(data);
     }
     // Zoom out
     if (mlx_is_key_down(data->mlx, MLX_KEY_MINUS)) {
-        data->zoom *= 0.9;
+        data->zoom /= 1.1;
+        data->offsetX -= (mouse_re - data->offsetX) * (1 - 1.1);
+        data->offsetY -= (mouse_im - data->offsetY) * (1 - 1.1);
         draw_mandelbrot(data);
     }
-        // Move view to the left
+    // Movement controls remain unchanged
     if (mlx_is_key_down(data->mlx, MLX_KEY_LEFT)) {
         data->offsetX -= 30 / data->zoom;
         draw_mandelbrot(data);
     }
-    // Move view to the right
     if (mlx_is_key_down(data->mlx, MLX_KEY_RIGHT)) {
         data->offsetX += 30 / data->zoom;
         draw_mandelbrot(data);
     }
-    // Move view upwards
     if (mlx_is_key_down(data->mlx, MLX_KEY_UP)) {
         data->offsetY -= 30 / data->zoom;
         draw_mandelbrot(data);
     }
-    // Move view downwards
     if (mlx_is_key_down(data->mlx, MLX_KEY_DOWN)) {
         data->offsetY += 30 / data->zoom;
         draw_mandelbrot(data);
     }
 }
+
 
 
 int main(void) {
